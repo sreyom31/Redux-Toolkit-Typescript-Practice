@@ -1,6 +1,6 @@
 import {v1 as uuid} from 'uuid'
 import {Todo} from "./type";
-import {combineReducers} from "redux";
+import {combineReducers, createStore} from "redux";
 
 // constants
 const CREATE_TODO = 'CREATE_TODO'
@@ -168,3 +168,8 @@ const reducers = combineReducers({
     selectedTodo: selectedTodoReducer,
     counter: countReducer
 })
+
+// Store
+const store = createStore(reducers)
+
+export default store
