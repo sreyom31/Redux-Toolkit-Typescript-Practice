@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { configureStore, createSlice, getDefaultMiddleware, PayloadAction } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 import {v1 as uuid} from 'uuid'
 import {Todo} from "./type";
 
@@ -43,6 +44,9 @@ const todosSlice = createSlice({
         },
         edit: (state, {payload}: PayloadAction<{id: string, desc: string}>) => {
             const todoToEdit = state.find(todo => todo.id === payload.id)
+            if (todoToEdit) {
+              todoToEdit.desc = payload.desc;
+            }
         }, 
         toggle: (state,{ payload }: PayloadAction<{ id: string; isComplete: boolean }>) => {
             const index = state.findIndex(todo => todo.id === payload.id);
@@ -60,15 +64,15 @@ const todosSlice = createSlice({
 })
 
 const selectedTodoSlice = createSlice({
-    name: "selectedTodo",
+    name: 'selectedTodo',
     initialState: null as string | null,
     reducers: {
       select: (state, { payload }: PayloadAction<{ id: string }>) => payload.id
     }
-  });
+});
   
 const counterSlice = createSlice({
-    name: "counter",
+    name: 'counter',
     initialState: 0,
     reducers: {},
     extraReducers: {
@@ -78,3 +82,23 @@ const counterSlice = createSlice({
       [todosSlice.actions.remove.type]: state => state + 1
     }
 });
+
+export const {
+    create: createTodoActionCreator,
+    edit: editTodoActionCreator,
+    remove: deleteTodoActionCreator,
+    toggle: toggleTodoActionCreator
+} = todosSlice.actions
+
+export const { select: selectTodoActionCreator } = selectedTodoSlice.actions;
+
+const reducer = {
+    todos: todosSlice.reducer,
+    selectedTodo: selectedTodoSlice.reducer,
+    counter: counterSlice.reducer
+}
+
+export default configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
+})
