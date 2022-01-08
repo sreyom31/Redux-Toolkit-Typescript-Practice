@@ -140,3 +140,23 @@ const selectTodoReducer = (state: string | null = null, action: SelectTodoAction
         }
     }
 }
+
+const countReducer = (state: number = 0, action: TodoActionTypes) => {
+    switch (action.type) {
+        case CREATE_TODO: {
+            return state + 1
+        }
+        case EDIT_TODO: {
+            return state + 1
+        }
+        case TOGGLE_TODO: {
+            return state + 1
+        }
+        case DELETE_TODO: {
+            return state + 1
+        }
+        default: {
+            return state
+        }
+    }
+}
