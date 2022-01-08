@@ -6,8 +6,8 @@ import React, {
   useState
 } from "react";
 import {useDispatch, useSelector} from "react-redux";
-import { v1 as uuid } from "uuid";
-import {State, Todo} from "../type";
+import {createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator} from "../redux-og";
+import {State} from "../type";
 import "./App.css";
 
 const App = function() {
@@ -34,9 +34,14 @@ const App = function() {
 
   const handleCreateNewTodo = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+    if (!newTodoInput.length) return
+    dispatch(createTodoActionCreator({desc: newTodoInput}))
+    setNewTodoInput("")
   };
 
-  const handleSelectTodo = (todoId: string) => (): void => {};
+  const handleSelectTodo = (todoId: string) => (): void => {
+    dispatch(selectTodoActionCreator({id: todoId}))
+  };
 
   const handleEdit = (): void => {
     if (!selectedTodo) return;
@@ -53,22 +58,35 @@ const App = function() {
 
   const handleUpdate = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+
+    if (!editTodoInput.length || !selectedTodoId) {
+      handleCancelUpdate()
+      return
+    }
+
+    dispatch(editTodoActionCreator({id: selectedTodoId, desc: editTodoInput}))
+    setIsEditMode(false)
+    setEditTodoInput("")
   };
 
   const handleCancelUpdate = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e?: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): void => {
-    e.preventDefault();
+    e?.preventDefault();
     setIsEditMode(false);
     setEditTodoInput("");
   };
 
   const handleToggle = (): void => {
     if (!selectedTodoId || !selectedTodo) return;
+
+    dispatch(toggleTodoActionCreator({id: selectedTodoId, isComplete: !selectedTodo.isComplete}))
   };
 
   const handleDelete = (): void => {
     if (!selectedTodoId) return;
+
+    dispatch(deleteTodoActionCreator({id: selectedTodoId}))
   };
 
   return (
