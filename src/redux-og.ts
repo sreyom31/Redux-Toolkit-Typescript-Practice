@@ -128,3 +128,15 @@ const todosReducer = (state: Todo[] = todosInitialState, action: TodoActionTypes
         }
     }
 }
+
+type SelectTodoActionTypes = SelectTodoActionType
+const selectTodoReducer = (state: string | null = null, action: SelectTodoActionTypes) => {
+    switch (action.type) {
+        case SELECT_TODO: {
+            return action.payload.id
+        }
+        default: {
+            return state
+        }
+    }
+}
