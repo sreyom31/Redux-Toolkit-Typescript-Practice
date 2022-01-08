@@ -1,5 +1,6 @@
 import {v1 as uuid} from 'uuid'
 import {Todo} from "./type";
+import {combineReducers} from "redux";
 
 // constants
 const CREATE_TODO = 'CREATE_TODO'
@@ -130,7 +131,7 @@ const todosReducer = (state: Todo[] = todosInitialState, action: TodoActionTypes
 }
 
 type SelectTodoActionTypes = SelectTodoActionType
-const selectTodoReducer = (state: string | null = null, action: SelectTodoActionTypes) => {
+const selectedTodoReducer = (state: string | null = null, action: SelectTodoActionTypes) => {
     switch (action.type) {
         case SELECT_TODO: {
             return action.payload.id
@@ -160,3 +161,10 @@ const countReducer = (state: number = 0, action: TodoActionTypes) => {
         }
     }
 }
+
+// Combine Reducers
+const reducers = combineReducers({
+    todos: todosReducer,
+    selectedTodo: selectedTodoReducer,
+    counter: countReducer
+})
